@@ -1,0 +1,15 @@
+{
+  "recommendations": [
+    "msjsdiag.debugger-for-chrome",
+    "christian-kohler.npm-intellisense",
+    "CoenraadS.bracket-pair-colorizer",
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens",
+    "johnpapa.vscode-peacock",
+    "Orta.vscode-jest",
+    "pflannery.vscode-versionlens",
+    "wix.vscode-import-cost",
+    "joelday.docthis",
+    "ChakrounAnas.turbo-console-log"
+  ]
+}

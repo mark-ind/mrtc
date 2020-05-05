@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "removeComments": true, 
+    "declaration": false,                   /* Generates corresponding '.d.ts' file. */
+    "strict": true,                           /* Enable all strict type-checking options. */
+    "esModuleInterop": true,                  /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
+    "baseUrl": ".",
+    "module": "system",
+    "outFile": "dist/index.js",
+    "target": "es5",
+    "lib": ["es6", "dom"],
+    "types": ["reflect-metadata", "node", "jest"],
+    "sourceMap": true,
+    "allowJs": true,
+    "jsx": "react",
+    "moduleResolution": "node",
+    "rootDir": "src",
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "exclude": [
+    "dist/",
+  ]
+}

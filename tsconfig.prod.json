@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "removeComments": false, 
+    "declaration": true,
+    "sourceMap": true
+  },
+  "exclude": [
+    "dist/",
+    "**/*.test.ts"
+  ]
+}
