@@ -1,0 +1,29 @@
+{
+  "name": "mrtc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.prod.json",
+    "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
+    "test": "jest",
+    "test:watch": "yarn test --watch",
+    "test:coverage": "yarn test --coverage"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "25.2.1",
+    "@typescript-eslint/eslint-plugin": "2.30.0",
+    "@typescript-eslint/parser": "2.30.0",
+    "eslint": "6.8.0",
+    "jest": "25.5.3",
+    "ts-jest": "25.4.0",
+    "typescript": "3.8.3"
+  }
+}
