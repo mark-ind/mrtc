@@ -1,4 +1,11 @@
-export function sum(a: number, b: number): number {
+import { Container, IocLoader, Types } from "src/ioc/ioc";
+import { IService } from './Service';
 
-  return a + b;
+export default class Factory {
+
+  public static build(options: {}): IService {
+    IocLoader.load(options);
+
+    return Container.get<IService>(Types.Service);
+  }
 }

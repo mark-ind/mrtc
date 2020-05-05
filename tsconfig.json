@@ -10,13 +10,15 @@
     "outFile": "dist/index.js",
     "target": "es5",
     "lib": ["es6", "dom"],
-    "types": ["node", "jest"],
+    "types": ["reflect-metadata", "node", "jest"],
     "sourceMap": true,
     "allowJs": true,
     "jsx": "react",
     "moduleResolution": "node",
     "rootDir": "src",
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "exclude": [
     "dist/",
