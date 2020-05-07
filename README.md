@@ -1,9 +1,9 @@
-# LIB NAME
+# MRTC
 
 Description here
 
 ## Installation
 
 ```shell
-yarn add https://github.com/MarcoMedrano/lib_name_here.git
+yarn add https://github.com/mark-ind/mrtc.git
 ```
