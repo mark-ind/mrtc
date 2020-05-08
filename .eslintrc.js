@@ -11,6 +11,8 @@ module.exports = {
     rules: {
         'no-undefined': 1,
         'max-depth': [2, 2],
+        'max-lines': ["error", { max: 200, "skipComments": true }],
+        'max-len': ["error", { code: 100, tabWidth: 2, ignoreTrailingComments: true, ignoreComments: true }],
         'no-unneeded-ternary': 2,
         'padding-line-between-statements': [
             2,

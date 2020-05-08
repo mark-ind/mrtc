@@ -1,52 +1,35 @@
-import { IConnection } from "src/IMrtc";
-import { IEvent, EventDispatcher, SimpleEventDispatcher, ISimpleEvent } from "strongly-typed-events";
+import { IConnection, IMediaConnection } from "src/IMrtc";
+import { IEvent, EventDispatcher } from "strongly-typed-events";
 import Peer, { DataConnection, MediaConnection } from "peerjs";
 import { MetadataType } from "src/imp/MetadataType";
+import { PeerMediaConnection } from './PeerMediaConnection';
 
 export default class PeerConnection implements IConnection {
-
   private peer: Peer;
   private connection: DataConnection;
 
-  private screenStream!: MediaStream;
-  private audioStream!: MediaStream;
-  private camStream!: MediaStream;
-
   private _onData = new EventDispatcher<IConnection, {}>();
-  private _onScreenShared = new EventDispatcher<IConnection, MediaStream>();
-  private _onAudioShared = new EventDispatcher<IConnection, MediaStream>();
-  private _onWebcamShared = new EventDispatcher<IConnection, MediaStream>();
-  private _onClose = new SimpleEventDispatcher<IConnection>();
+  private _onScreenShared = new EventDispatcher<IConnection, IMediaConnection>();
+  private _onAudioShared = new EventDispatcher<IConnection, IMediaConnection>();
+  private _onWebcamShared = new EventDispatcher<IConnection, IMediaConnection>();
+  private _onDisconnected = new EventDispatcher<IConnection, string>();
 
   public constructor(peer: Peer, connection: DataConnection) {
     this.connection = connection;
     this.peer = peer;
 
     connection.on('data', (data) => this._onData.dispatch(this, JSON.parse(data)));
-    connection.on('close', () => this._onClose.dispatch(this));
+    connection.on('close', () => this._onDisconnected.dispatch(this, 'closed'));
+    connection.on('error', (error) => this._onDisconnected.dispatch(this, error));
 
-    this.peer.on('call', (call: MediaConnection) => {
-      // eslint-disable-next-line no-console
-      console.log("PeerConnection -> constructor -> call", call)
-      switch (call.metadata.type as MetadataType) {
-        case MetadataType.screen:
-          call.on('stream', remoteStream => { this._onScreenShared.dispatch(this, remoteStream) });
-          break;
-        case MetadataType.audio:
-          call.on('stream', remoteStream => { this._onAudioShared.dispatch(this, remoteStream) });
-          break;
-        case MetadataType.cam:
-          call.on('stream', remoteStream => { this._onWebcamShared.dispatch(this, remoteStream) });
-          break;
-      }
-    });
+    this.peer.on('call', this.handleMediaConnection);
   }
 
   public async shareData(data: {}): Promise<void> {
     this.connection.send(JSON.stringify(data));
   }
 
-  public async shareScreen(options: {}): Promise<MediaStream> {
+  public async shareScreen(options: {}): Promise<IMediaConnection> {
     const gdmOptions = {
       video: {
         cursor: "always"
@@ -60,38 +43,58 @@ export default class PeerConnection implements IConnection {
 
     const metadata = { type: MetadataType.screen }
 
-    this.screenStream = await (navigator.mediaDevices as any).getDisplayMedia(gdmOptions) as MediaStream;
+    const stream = await (navigator.mediaDevices as any).getDisplayMedia(gdmOptions) as MediaStream;
 
-    const mediaConnection = this.peer.call(this.connection.peer, this.screenStream, { metadata });
-    mediaConnection.on("error", (err) => { throw err });
+    const connection = this.peer.call(this.connection.peer, stream, { metadata });
 
-    return this.screenStream;
+    return new PeerMediaConnection(connection, stream);
   }
 
-  public async shareAudio(options: {}): Promise<MediaStream> {
+  public async shareAudio(options: {}): Promise<IMediaConnection> {
     const metadata = { type: MetadataType.audio }
 
-    this.audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const mediaConnection = this.peer.call(this.connection.peer, this.audioStream, { metadata });
-    mediaConnection.on("error", (err) => { throw err });
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const connection = this.peer.call(this.connection.peer, stream, { metadata });
 
-    return this.audioStream;
+    return new PeerMediaConnection(connection, stream);
   }
 
-  public async shareWebcam(options: {}): Promise<MediaStream> {
+  public async shareCam(options: {}): Promise<IMediaConnection> {
     const metadata = { type: MetadataType.cam }
 
-    this.camStream = await navigator.mediaDevices.getUserMedia({ video: true });
-    const mediaConnection = this.peer.call(this.connection.peer, this.camStream, { metadata });
-    mediaConnection.on("error", (err) => { throw err });
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    const connection = this.peer.call(this.connection.peer, stream, { metadata });
 
-    return this.camStream;
+    return new PeerMediaConnection(connection, stream);
+  }
+
+  public disconnect(): void {
+    this.connection.close();
   }
 
   public get onData(): IEvent<IConnection, {}> { return this._onData.asEvent() }
-  public get onScreenShared(): IEvent<IConnection, MediaStream> { return this._onScreenShared.asEvent() }
-  public get onAudioShared(): IEvent<IConnection, MediaStream> { return this._onAudioShared.asEvent() }
-  public get onWebcamShared(): IEvent<IConnection, MediaStream> { return this._onWebcamShared.asEvent() }
-  public get onClose(): ISimpleEvent<IConnection> { return this._onClose.asEvent() }
+  public get onScreenShared(): IEvent<IConnection, IMediaConnection> { return this._onScreenShared.asEvent() }
+  public get onAudioShared(): IEvent<IConnection, IMediaConnection> { return this._onAudioShared.asEvent() }
+  public get onWebcamShared(): IEvent<IConnection, IMediaConnection> { return this._onWebcamShared.asEvent() }
+  public get onDisconnected(): IEvent<IConnection, string> { return this._onDisconnected.asEvent() }
 
+  private handleMediaConnection(connection: MediaConnection): void {
+    switch (connection.metadata.type as MetadataType) {
+      case MetadataType.screen:
+        connection.on('stream', remoteStream => {
+          this._onScreenShared.dispatch(this, new PeerMediaConnection(connection, remoteStream))
+        });
+        break;
+      case MetadataType.audio:
+        connection.on('stream', remoteStream => {
+          this._onAudioShared.dispatch(this, new PeerMediaConnection(connection, remoteStream))
+        });
+        break;
+      case MetadataType.cam:
+        connection.on('stream', remoteStream => {
+          this._onWebcamShared.dispatch(this, new PeerMediaConnection(connection, remoteStream))
+        });
+        break;
+    }
+  }
 }
