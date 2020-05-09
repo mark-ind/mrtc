@@ -1,8 +1,10 @@
+import { injectable } from 'src/ioc/ioc';
 import Peer from 'peerjs';
 import { SimpleEventDispatcher, ISimpleEvent } from "strongly-typed-events";
 import IMrtc, { IConnection } from 'src/IMrtc';
 import PeerConnection from './PeerConnection';
 
+@injectable()
 export default class PeerRtc implements IMrtc {
   private peer!: Peer;
   private _onRemoteConnection = new SimpleEventDispatcher<IConnection>();

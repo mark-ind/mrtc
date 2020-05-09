@@ -1,6 +1,5 @@
 const  Types = {
-    Service :Symbol(),
-    Sum : Symbol()
+    Mrtc :Symbol()
 };
 
 export { Types }

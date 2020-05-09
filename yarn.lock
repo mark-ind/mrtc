@@ -553,7 +553,7 @@
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
   integrity sha512-f5j5b/Gf71L+dbqxIpQ4Z2WlmI/mPJ0fOkGGmFgtb6sAu97EPczzbS3/tJKxmcYDj55OX6ssqwDAWOHIYDRDGA==
 
-"@types/peerjs@^1.1.0":
+"@types/peerjs@1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@types/peerjs/-/peerjs-1.1.0.tgz#822962d78b26dc43c113fac0a8bf653e12851487"
   integrity sha512-dVocsfYFg5QQuUB9OAxfrSvz4br4pyX+7M61ZJSRiYtE3NdayShk1p1Y8b9TmCj724TwHskVraeF7wyPl0rYcg==
@@ -3185,7 +3185,7 @@ peerjs-js-binarypack@1.0.1:
   resolved "https://registry.yarnpkg.com/peerjs-js-binarypack/-/peerjs-js-binarypack-1.0.1.tgz#80fa2b61c794a6b16d64253700405e476ada29be"
   integrity sha512-N6aeia3NhdpV7kiGxJV5xQiZZCVEEVjRz2T2C6UZQiBkHWHzUv/oWA4myQLcwBwO8LUoR1KWW5oStvwVesmfCg==
 
-peerjs@*, peerjs@^1.2.0:
+peerjs@*, peerjs@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/peerjs/-/peerjs-1.2.0.tgz#63a0ac54b3b79bba8502e31ecb5bcb4688e1bdd6"
   integrity sha512-+ZWByKOYDDzpLefueY2drUFC5U2UVv947NswaYQb6o4twKiRcoDLdcgwfIQHjhcBWwvVUhYyhGIdSJy29+4a9Q==
@@ -3897,7 +3897,7 @@ strip-json-comments@^3.0.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-3.1.0.tgz#7638d31422129ecf4457440009fba03f9f9ac180"
   integrity sha512-e6/d0eBu7gHtdCqFt0xJr642LdToM5/cN4Qb9DbHjVx1CP5RyeM+zH7pbecEmDv/lBqb0QH+6Uqq75rxFPkM0w==
 
-strongly-typed-events@^1.6.11:
+strongly-typed-events@1.6.11:
   version "1.6.11"
   resolved "https://registry.yarnpkg.com/strongly-typed-events/-/strongly-typed-events-1.6.11.tgz#0109d267414497cfd3806c733ea90897285e2fef"
   integrity sha512-MpFClTaPVXDvR1rzmc5vjKKGH+WyBHc3nmFSdURLTBbiHJMCA7ZwY8mP9tRnI369fYJ5VeEYU+tCplr1VXF6jA==

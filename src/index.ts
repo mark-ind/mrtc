@@ -1,11 +1,5 @@
-import { Container, IocLoader, Types } from "src/ioc/ioc";
-import { IService } from './Service';
+import IMrtc, { IConnection, IMediaConnection } from "./IMrtc";
+import MrtcFactory from 'src/MrtcFactory';
+import Logger from 'src/log/Logger';
 
-export default class Factory {
-
-  public static build(options: {}): IService {
-    IocLoader.load(options);
-
-    return Container.get<IService>(Types.Service);
-  }
-}
+export { MrtcFactory, Logger, IMrtc, IConnection, IMediaConnection }
