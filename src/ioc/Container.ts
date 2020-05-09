@@ -4,7 +4,7 @@ const container = new InversifyContainer();
 
 export default class Container {
 
-  public static getInversifyContainer (): InversifyContainer {
+  public static getInversifyContainer(): InversifyContainer {
     return container;
   }
 
@@ -18,7 +18,8 @@ export default class Container {
   }
 
   public static bindSingleton<T>(serviceId: symbol, constructor: { new(...args: any[]): T }): void {
-    if (container.isBound(serviceId)) container.rebind<T>(serviceId).to(constructor).inSingletonScope();
+    if (container.isBound(serviceId))
+      container.rebind<T>(serviceId).to(constructor).inSingletonScope();
     else container.bind<T>(serviceId).to(constructor).inSingletonScope();
   }
 }

@@ -73,9 +73,15 @@ export default class PeerConnection implements IConnection {
   }
 
   public get onData(): IEvent<IConnection, {}> { return this._onData.asEvent() }
-  public get onScreenShared(): IEvent<IConnection, IMediaConnection> { return this._onScreenShared.asEvent() }
-  public get onAudioShared(): IEvent<IConnection, IMediaConnection> { return this._onAudioShared.asEvent() }
-  public get onWebcamShared(): IEvent<IConnection, IMediaConnection> { return this._onWebcamShared.asEvent() }
+  public get onScreenShared(): IEvent<IConnection, IMediaConnection> {
+    return this._onScreenShared.asEvent()
+  }
+  public get onAudioShared(): IEvent<IConnection, IMediaConnection> {
+    return this._onAudioShared.asEvent()
+  }
+  public get onWebcamShared(): IEvent<IConnection, IMediaConnection> {
+    return this._onWebcamShared.asEvent()
+  }
   public get onDisconnected(): IEvent<IConnection, string> { return this._onDisconnected.asEvent() }
 
   private handleMediaConnection(connection: MediaConnection): void {
