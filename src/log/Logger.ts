@@ -30,27 +30,27 @@ export default class Logger {
     return new Logger(`${this.loggerName}.${name}`);
   }
 
-  public debug(message: string, obj?: {}): void {
+  public debug(message: any, obj?: {}): void {
     if (this.allowLevel('debug'))
       console.debug(this.format(message), obj);
   }
 
-  public info(message: string, ...optionalParams: any[]): void {
+  public info(message: any, ...optionalParams: any[]): void {
     if (this.allowLevel('info'))
       console.info(this.format(message), ...optionalParams);
   }
 
-  public warn(message: string, obj?: {}): void {
+  public warn(message: any, obj?: {}): void {
     if (this.allowLevel('warn'))
       console.warn(this.format(message), obj);
   }
 
-  public error(message: string, obj?: {}): void {
+  public error(message: any, obj?: {}): void {
     if (this.allowLevel('error'))
       console.error(this.format(message), obj);
   }
 
-  private format(message: string): string {
+  private format(message: any): string {
     return `${this.loggerName}: ${message}`;
   }
 
