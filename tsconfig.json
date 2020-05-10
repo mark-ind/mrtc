@@ -6,8 +6,9 @@
     "strict": true,                           /* Enable all strict type-checking options. */
     "esModuleInterop": true,                  /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
     "baseUrl": ".",
-    "module": "system",
-    "outFile": "dist/index.js",
+    "module": "commonjs",
+    "outDir": "dist",
+    /*"outFile": "dist/index.js",*/
     "target": "es5",
     "lib": ["es6", "dom"],
     "types": ["reflect-metadata", "node", "jest"],
@@ -16,11 +17,18 @@
     "jsx": "react",
     "moduleResolution": "node",
     "rootDir": "src",
+    "paths": {
+      "src/*": [
+        "src/*"
+      ]},
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
   "exclude": [
     "dist/",
+  ],
+  "include": [
+    "src/"
   ]
 }
