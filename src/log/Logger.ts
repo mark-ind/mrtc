@@ -18,43 +18,43 @@ export default class Logger {
     this.loggerName = loggerName;
   }
 
-  public static configure(options: { level: level }): void {
+  public static configure = (options: { level: level }): void => {
     Logger.configuredLevel = options.level;
   }
 
-  public static getLogger(loggerName: string): Logger {
+  public static getLogger = (loggerName: string): Logger => {
     return new Logger(loggerName);
   }
 
-  public subLogger(name: string): Logger {
+  public subLogger = (name: string): Logger => {
     return new Logger(`${this.loggerName}.${name}`);
   }
 
-  public debug(message: any, obj?: {}): void {
+  public debug = (message: any, obj?: {}): void => {
     if (this.allowLevel('debug'))
       console.debug(this.format(message), obj);
   }
 
-  public info(message: any, ...optionalParams: any[]): void {
+  public info = (message: any, ...optionalParams: any[]): void => {
     if (this.allowLevel('info'))
       console.info(this.format(message), ...optionalParams);
   }
 
-  public warn(message: any, obj?: {}): void {
+  public warn = (message: any, obj?: {}): void => {
     if (this.allowLevel('warn'))
       console.warn(this.format(message), obj);
   }
 
-  public error(message: any, obj?: {}): void {
+  public error = (message: any, obj?: {}): void => {
     if (this.allowLevel('error'))
       console.error(this.format(message), obj);
   }
 
-  private format(message: any): string {
+  private format = (message: any): string => {
     return `${this.loggerName}: ${message}`;
   }
 
-  private allowLevel(level: level): boolean {
+  private allowLevel = (level: level): boolean => {
     return levels[level] >= levels[Logger.configuredLevel];
   }
 }
