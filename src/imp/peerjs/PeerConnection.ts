@@ -3,10 +3,15 @@ import { IEvent, EventDispatcher } from "strongly-typed-events";
 import Peer, { DataConnection, MediaConnection } from "peerjs";
 import { MetadataType } from "src/imp/MetadataType";
 import { PeerMediaConnection } from './PeerMediaConnection';
+import Logger from 'src/log/Logger';
+import isElectron from 'is-electron';
+import BrowserScreenShare from 'src/screenCapture/BrowserScreenShare';
+import ElectronScreenShare from 'src/screenCapture/ElectronScreenShare';
 
 export default class PeerConnection implements IConnection {
   private peer: Peer;
   private connection: DataConnection;
+  private logger = Logger.getLogger(PeerConnection.name);
 
   private _onData = new EventDispatcher<IConnection, {}>();
   private _onScreenShared = new EventDispatcher<IConnection, IMediaConnection>();
@@ -26,25 +31,21 @@ export default class PeerConnection implements IConnection {
   }
 
   public async shareData(data: {}): Promise<void> {
+    this.logger.subLogger('shareData').debug(`data`, data);
+
     this.connection.send(JSON.stringify(data));
   }
 
   public async shareScreen(options: {}): Promise<IMediaConnection> {
-    const gdmOptions = {
-      video: {
-        cursor: "always"
-      },
-      audio: {
-        echoCancellation: true,
-        noiseSuppression: true,
-        sampleRate: 44100
-      }
-    }
+    const logger = this.logger.subLogger('shareScreen');
+    logger.info(`Is electron ${isElectron()}`)
 
     const metadata = { type: MetadataType.screen }
+    const stream = isElectron()
+      ? await ElectronScreenShare.share(options)
+      : await BrowserScreenShare.share(options);
 
-    const stream = await (navigator.mediaDevices as any).getDisplayMedia(gdmOptions) as MediaStream;
-
+    logger.info(`Calling peer with ${this.connection.peer} and `, stream, { metadata });
     const connection = this.peer.call(this.connection.peer, stream, { metadata });
 
     return new PeerMediaConnection(connection, stream);
@@ -84,23 +85,34 @@ export default class PeerConnection implements IConnection {
   }
   public get onDisconnected(): IEvent<IConnection, string> { return this._onDisconnected.asEvent() }
 
-  private handleMediaConnection(connection: MediaConnection): void {
-    switch (connection.metadata.type as MetadataType) {
+  private handleMediaConnection = (connection: MediaConnection): void => {
+    const logger = this.logger.subLogger('handleMediaConnection');
+
+    logger.debug('Connection ', connection);
+    switch (connection.metadata.type) {
       case MetadataType.screen:
+        logger.debug('Registering on stream for screen capture ');
         connection.on('stream', remoteStream => {
+          logger.debug('Stream arrived for screen capture ');
           this._onScreenShared.dispatch(this, new PeerMediaConnection(connection, remoteStream))
         });
         break;
       case MetadataType.audio:
+        logger.debug('Stream arrived for audio ');
         connection.on('stream', remoteStream => {
           this._onAudioShared.dispatch(this, new PeerMediaConnection(connection, remoteStream))
         });
         break;
       case MetadataType.cam:
+        logger.debug('Stream arrived for cam ');
         connection.on('stream', remoteStream => {
           this._onWebcamShared.dispatch(this, new PeerMediaConnection(connection, remoteStream))
         });
         break;
+      default:
+        logger.warn(`Unsupported meta data type ${connection.metadata.type}`)
     }
+
+    connection.answer();
   }
 }

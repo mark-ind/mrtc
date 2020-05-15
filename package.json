@@ -30,6 +30,8 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
+    "electron": "8.2.5",
+    "is-electron": "2.2.0",
     "inversify": "5.0.1",
     "inversify-inject-decorators": "3.1.0",
     "peerjs": "1.2.0",
