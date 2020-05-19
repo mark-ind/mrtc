@@ -25,6 +25,7 @@ export interface IConnection {
 
 export interface IMediaConnection {
   stream: MediaStream;
+  // enabled: boolean; // https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/enabled
   disconnect(): void;
 
   onDisconnected: IEvent<IMediaConnection, string>;
