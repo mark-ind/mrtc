@@ -1,0 +1,8 @@
+/src
+/.vscode
+ts*
+yarn*
+jest*
+CONTRIBUTING.md
+.eslintrc.js
+.gitignore
