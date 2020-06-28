@@ -47,9 +47,14 @@ export default class PeerRtc implements IMrtc {
     const connection = this.peer.connect(remoteId);
 
     return new Promise<IConnection>((resolve, reject) => {
-      connection.on('open', () => { resolve(new PeerConnection(this.peer, connection)) });
+      connection.on('open', () => { 
+        this.logger.info(`connected to ${remoteId} successfully`, connection);
+        resolve(new PeerConnection(this.peer, connection)) 
+      });
       this.peer.on('error', error => {
-        if (error.type === 'peer-unavailable') reject('peer-unavailable')
+        // if (error.type === 'peer-unavailable') reject('peer-unavailable')
+        this.logger.error(`failed connection to ${remoteId}`, error);
+        reject(error.type)
       });
     });
   }

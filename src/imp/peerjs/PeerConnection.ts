@@ -54,7 +54,7 @@ export default class PeerConnection implements IConnection {
   public async shareAudio(options: {}): Promise<IMediaConnection> {
     const metadata = { type: MetadataType.audio }
 
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true } });
     const connection = this.peer.call(this.connection.peer, stream, { metadata });
 
     return new PeerMediaConnection(connection, stream);
