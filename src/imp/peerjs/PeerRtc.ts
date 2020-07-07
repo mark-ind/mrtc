@@ -15,41 +15,52 @@ export default class PeerRtc implements IMrtc {
   public connectServer(localId: string, options?: {}): Promise<boolean> {
     const logger = this.logger.subLogger('connectServer');
 
-    logger.debug(`localId:${localId}, options`, options);
-    this.peer = new Peer(localId, options);
+    return new Promise((resolve, reject) => {
+      try {
+        this.peer = new Peer(localId, options);
+        this.peer.on('open', () => {
+          logger.debug(`localId:${localId}, options`, options);
 
-    this.peer.on('connection', connection => {
-      logger.debug(`onRemoteConnection`, connection);
-      this._onRemoteConnection.dispatch(new PeerConnection(this.peer, connection));
-    });
+          this.peer.on('connection', connection => {
+            logger.debug(`onRemoteConnection`, connection);
+            this._onRemoteConnection.dispatch(new PeerConnection(this.peer, connection));
+          });
 
-    this.peer.on('disconnected', () => {
-      logger.debug(`_onServerDisconnected`);
-      this._onServerDisconnected.dispatch('disconnected')
-    });
-    
-    this.peer.on('error', (error) => {
-      logger.debug(`error`, error);
-      if (error.type !== 'peer-unavailable'){
-        logger.debug(`_onServerDisconnected`, error.type);
-        this._onServerDisconnected.dispatch(error.type)
+          this.peer.on('disconnected', () => {
+            logger.debug(`_onServerDisconnected`);
+            this._onServerDisconnected.dispatch('disconnected')
+          });
+
+          this.peer.on('error', (error) => {
+            logger.debug(`error`, error);
+            if (error.type !== 'peer-unavailable') {
+              logger.error(`_onServerDisconnected`, error);
+              this._onServerDisconnected.dispatch(error.type)
+            } else {
+              logger.error(`Peer unavailable error`, error);
+              reject(error)
+            }
+          });
+
+          // Oscar Mercado Ministro de Trabajo
+          logger.debug(`opened`);
+          resolve(true);
+        })
+
+      } catch (error) {
+        logger.error(`Unexpected error`, error);
+        reject(error)
       }
     });
-
-    // Oscar Mercado Ministro de Trabajo
-    return new Promise((resolve) => { this.peer.on('open', () => {
-      logger.debug(`opened`);
-      resolve(true);
-    }) });
   }
 
   public connectRemote(remoteId: string): Promise<IConnection> {
     const connection = this.peer.connect(remoteId);
 
     return new Promise<IConnection>((resolve, reject) => {
-      connection.on('open', () => { 
+      connection.on('open', () => {
         this.logger.info(`connected to ${remoteId} successfully`, connection);
-        resolve(new PeerConnection(this.peer, connection)) 
+        resolve(new PeerConnection(this.peer, connection))
       });
       this.peer.on('error', error => {
         // if (error.type === 'peer-unavailable') reject('peer-unavailable')
@@ -65,11 +76,11 @@ export default class PeerRtc implements IMrtc {
     return Promise.resolve(this.peer.disconnected);
   }
 
-  public get onRemoteConnection(): ISimpleEvent<IConnection> { 
-    return this._onRemoteConnection.asEvent() 
+  public get onRemoteConnection(): ISimpleEvent<IConnection> {
+    return this._onRemoteConnection.asEvent()
   }
 
-  public get onServerDisconnected(): ISimpleEvent<string> { 
-    return this._onServerDisconnected.asEvent() 
+  public get onServerDisconnected(): ISimpleEvent<string> {
+    return this._onServerDisconnected.asEvent()
   }
 }

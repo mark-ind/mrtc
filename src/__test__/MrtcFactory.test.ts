@@ -2,7 +2,7 @@ import { IocLoader } from "src/ioc/ioc";
 import MrtcFactory from "src/MrtcFactory";
 import PeerRtc from '../imp/peerjs/PeerRtc';
 
-IocLoader.load({});
+IocLoader.load({provider:'peerjs'});
 const mrtc = MrtcFactory.build();
 
 describe("build", () => {
